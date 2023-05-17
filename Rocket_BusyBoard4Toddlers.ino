@@ -12,6 +12,7 @@ Classes -> Toggle
 
 #include "Toggle.h"
 #include "Led.h"
+#include <stdexcept>
 
 #include <FastLED.h>
 
