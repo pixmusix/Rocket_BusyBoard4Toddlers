@@ -12,13 +12,11 @@ class Led {
   protected:
 
     byte pin;
-    int size;
 
   public:
 
     Led(byte pin) {
       this->pin = pin;
-      size = 1;
       init();
     }
 
@@ -32,16 +30,14 @@ class Led {
 
 };
 
-class LedStrip : public Led {
-
-  private:
-
-    CRGB matrix[8];
+template<byte pin, int sz> class LedStrip {
 
   protected:
-    void init() {
-      pinMode(pin, OUTPUT);
-      FastLED.addLeds<WS2812B, pin, GRB>(matrix, size); 
+
+    CRGB matrix[sz];
+    
+    void ledConfig() {
+      FastLED.addLeds<WS2812B, pin, GRB>(matrix, sz); 
     }
 
     void ledPop() {
@@ -50,58 +46,17 @@ class LedStrip : public Led {
 
   public:
 
-    LedStrip(byte pin) : Led { pin } {     
-      this->pin = pin;
-      size = 8;
-      init();
+    LedStrip() {     
+      pinMode(pin, OUTPUT);
+      ledConfig();
     }
 
     CRGB get(int i) {
-      if (i < size) {
+      if (i < sz) {
         return matrix[i];
       } else {
         return matrix[0];
       }
     }
 
-};
-
-class LedRainbow : public LedStrip {
-
-  private:
-
-    CRGB matrix[13];
-
-  public:
-
-    LedRainbow(byte pin) : LedStrip { pin } {
-      size = 13;
-      this->pin = pin;
-      init();
-    }
-
-};
-
-class LedMatrix : public LedStrip {
-
-  private:
-
-    CRGB matrix[64];
-
-  public:
-
-    LedMatrix(byte pin) : LedStrip { pin } {     
-      this->pin = pin;
-      size = 64;
-      init());
-    }
-
-    CRGB get(int x, int y) {
-      int i = x + y * 8;
-      if (i < size) {
-        return matrix[i];
-      } else {
-        return matrix[0];
-      }
-    }
 };

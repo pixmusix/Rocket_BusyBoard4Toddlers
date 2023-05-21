@@ -4,11 +4,6 @@ class Toggle {
     byte pin;
     byte state;
 
-    void init() {
-      pinMode(pin, INPUT);
-      update();
-    }
-
   private:
     void update() {
       state = digitalRead(pin);
@@ -18,7 +13,8 @@ class Toggle {
 
     Toggle(byte pin) {
       this->pin = pin;
-      init();
+      pinMode(pin, INPUT);
+      update();
     }
 
     byte getState() {
@@ -53,8 +49,9 @@ class Button : public Toggle {
 
     Button(byte pin) : Toggle { pin } {
       this->pin = pin;
+      pinMode(pin, INPUT);
       lastReading = LOW;
-      init();
+      update();
     }
 
     bool isPressed() {
@@ -75,7 +72,8 @@ class Switch : public Toggle {
 
     Switch(byte pin) : Toggle { pin } {
       this->pin = pin;
-      init();
+      pinMode(pin, INPUT);
+      update();
     }
 
     bool isArmed() {
