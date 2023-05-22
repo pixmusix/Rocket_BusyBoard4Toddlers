@@ -51,7 +51,7 @@ template<byte pin, int sz> class LedStrip {
       ledConfig();
     }
 
-    CRGB get(int i) {
+    CRGB getPix(int i) {
       if (i < sz) {
         return matrix[i];
       } else {

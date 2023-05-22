@@ -16,7 +16,7 @@ class Slider {
       update();
     }
 
-    byte get() {
+    byte getValue() {
       update();
       return val;
     }
