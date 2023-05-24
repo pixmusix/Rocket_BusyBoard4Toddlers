@@ -4,7 +4,7 @@
 
 #include <math.h> 
 
-class PVector {
+class PixVector {
 
   public:
 
@@ -18,10 +18,10 @@ class PVector {
   /**
    * Constructor for an empty vector: x, y, and z are set to 0.
    */
-  PVector() {
+  PixVector() {
   }
 
-  PVector(float a, float b) {
+  PixVector(float a, float b) {
     x = a;
     y = b;
   }
@@ -39,7 +39,7 @@ class PVector {
   /**
    * Set x, y, and z coordinates from a Vector3D object.
    */
-  void set(PVector v) {
+  void set(PixVector v) {
     x = v.x;
     y = v.y;
   }
@@ -55,7 +55,7 @@ class PVector {
   /**
    * Add a vector to this vector
    */
-  void add(PVector v) {
+  void add(PixVector v) {
     x += v.x;
     y += v.y;
   }
@@ -70,7 +70,7 @@ class PVector {
    * Subtract a vector from this vector
    * @param v the vector to be subtracted
    */
-  void sub(PVector v) {
+  void sub(PixVector v) {
     x -= v.x;
     y -= v.y;
   }
@@ -93,7 +93,7 @@ class PVector {
   /**
    * Multiply each element of one vector by the elements of another vector.
    */
-  void mult(PVector v) {
+  void mult(PixVector v) {
     x *= v.x;
     y *= v.y;
   }
@@ -109,7 +109,7 @@ class PVector {
   /**
    * Divide each element of one vector by the elements of another vector.
    */
-  void div(PVector v) {
+  void div(PixVector v) {
     x /= v.x;
     y /= v.y;
   }
@@ -117,7 +117,7 @@ class PVector {
   /**
    * Calculate the Euclidean distance between two points (considering a point as a vector object)
    */
-  float dist(PVector v) {
+  float dist(PixVector v) {
     float dx = x - v.x;
     float dy = y - v.y;
     return sqrt(dx*dx + dy*dy);
@@ -127,7 +127,7 @@ class PVector {
   /**
    * Calculate the Euclidean distance between two points (considering a point as a vector object)
    */
-  static float dist(PVector v1, PVector v2) {
+  static float dist(PixVector v1, PixVector v2) {
     float dx = v1.x - v2.x;
     float dy = v1.y - v2.y;
     return sqrt(dx*dx + dy*dy);
@@ -137,7 +137,7 @@ class PVector {
   /**
    * Calculate the dot product with another vector
    */
-  float dot(PVector v) {
+  float dot(PixVector v) {
     return x*v.x + y*v.y;
   }
 
@@ -147,7 +147,7 @@ class PVector {
   }
   
   
-  static float dot(PVector v1, PVector v2) {
+  static float dot(PixVector v1, PixVector v2) {
       return v1.x*v2.x + v1.y*v2.y;
   }
 
@@ -184,7 +184,7 @@ class PVector {
   /**
    * Calculate the angle between two vectors, using the dot product
    */
-  static float angleBetween(PVector v1, PVector v2) {
+  static float angleBetween(PixVector v1, PixVector v2) {
     double dot = v1.x * v2.x + v1.y * v2.y;
     double v1mag = sqrt(v1.x * v1.x + v1.y * v1.y);
     double v2mag = sqrt(v2.x * v2.x + v2.y * v2.y);
