@@ -5,7 +5,6 @@ struct Rocket {
   CRGB pixels[64];
   char fuel;
   bool armed;
-  bool ready;
 };
 
 Rocket initRocket(Rocket a) {

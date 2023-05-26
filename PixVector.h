@@ -16,9 +16,11 @@ class PixVector {
 
 
   /**
-   * Constructor for an empty vector: x, y, and z are set to 0.
+   * Constructor for an empty vector: x and y are set to 0.
    */
   PixVector() {
+    x = 0;
+    y = 0;
   }
 
   PixVector(float a, float b) {
