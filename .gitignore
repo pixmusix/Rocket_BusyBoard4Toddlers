@@ -30,9 +30,3 @@
 *.exe
 *.out
 *.app
-
-# Python Scripts
-*.py
-
-# Bitmaps
-*.bmp
