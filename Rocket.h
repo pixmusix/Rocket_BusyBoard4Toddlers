@@ -8,6 +8,7 @@ struct Rocket {
   bool armed;
 };
 
+/* Populate a Rocket with Default Values */
 Rocket initRocket(Rocket a) {
   // Set RBG Pixel Values
   for (int j = 0; j < rocketRGBDataNumRows; j++) {

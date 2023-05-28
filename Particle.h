@@ -2,8 +2,9 @@
 #include <FastLED.h>
 #include "Globals.h"
 
-class Particle {
 
+/* A sizelss, massless single point with basic euclidean movement */
+class Particle {
 
   protected:
 
@@ -12,7 +13,10 @@ class Particle {
       acceleration.mult(drag);
     }
 
+    /* Returns a PixVector somewhere within the LED Display. */
     PixVector randVec64() {
+      // Currently always returns the same pseudo random number.
+      // Must return here to feed in noise.
       int ledsize = LEDMATRIX_COUNT;
       int rx = random(ledsize);
       int ry = random(ledsize);
@@ -52,6 +56,7 @@ class Particle {
       applyDrag(0.99);
     }
 
+    /* Returns an CRGB Array reprosenting the position of this particle*/
     Led64 paint() {
       Led64 grid;
       int ledY = LEDMATRIX_YDIM;
@@ -76,6 +81,7 @@ class Planet : public Particle {
       size = 6;
     }
 
+    /* Return an CRGB Array reprosenting the position of this Planet*/
     Led64 paint() {
       Led64 grid;
       int ledX = LEDMATRIX_XDIM;
@@ -100,6 +106,7 @@ class Moon : public Planet {
   
   public:
 
+    /* Return an CRGB Array reprosenting the position of this Moon*/
     Moon() : Planet { } {
       red = random(256);
       green = random(256);
@@ -116,6 +123,7 @@ class GiantPlanet : public Planet {
   
   public:
 
+    /* Return an CRGB Array reprosenting the position of this Giant*/
     GiantPlanet() : Planet { } {
       red = random(256);
       green = random(256);
