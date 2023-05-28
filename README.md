@@ -7,6 +7,6 @@ A digital busy-board for young children. Launch and control a rocketship with ze
 - Port the a stripped down PVector class from Java to C++ :heavy_check_mark:
 - Write a struct for the Rocket to be displayed on the LED Matrix :heavy_check_mark:
 - Write a function that passes RGBA data into the rocket Struct from a bmp :heavy_check_mark:
-- Classes for particles, planets, stars etc. :x:
+- Classes for particles, planets, stars etc. :heavy_check_mark:
 - Physics? :roll_eyes: :x:
 - ...

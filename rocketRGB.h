@@ -271,3 +271,6 @@ byte rocketRGBData[16][16][3] = {
         {  0,   0,   0},
         {  0,   0,   0}}
 };
+const int rocketRGBDataSize = sizeof(rocketRGBData);
+const int rocketRGBDataNumRows = rocketRGBDataSize/sizeof(rocketRGBData[0]);
+const int rocketRGBDataNumCols = sizeof(rocketRGBData[0])/sizeof(rocketRGBData[0][0]);
