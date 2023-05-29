@@ -85,7 +85,7 @@ class Planet : public Particle {
     Led64 paint() {
       Led64 grid;
       int ledX = LEDMATRIX_XDIM;
-      int ledY = LEDMATRIX_YDIM
+      int ledY = LEDMATRIX_YDIM;
       for (int j = 0; j < ledX; j++) {
         for (int i = 0; i < ledY; i++) {
           PixVector idx = PixVector(i,j);
