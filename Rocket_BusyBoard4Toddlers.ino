@@ -3,23 +3,51 @@
 #include "Slider.h"
 #include "PixVector.h"
 #include "Particle.h"
-#include "Rocket.h"
+#include "LightObjects.h"
 #include "Globals.h"
 #include <FastLED.h>
 
 const byte DISPLAY_PIN = 41;
+Rocket Apollo;
+AstroWindow window;
+Space universe;
 
-/* I wan't some function where I pass in a pointer to LEDStrip and Apollo and merge them*/
-// void draw() {
-//   for (int i = 0; i < LEDMATRIX_COUNT; i++) {
-
-//   }
-// } 
-
-vo/id setup() {
-  LedStrip<DISPLAY_PIN, LEDMATRIX_COUNT> theDisplay();
-  Rocket Apollo;
-  Apollo = initRocket(Apollo); // WHY DOES THIS COMPILE! Isn't Apollo on the stack?? 
+void flyGirl(PixVector vec) {
+  for (int i = 0; i < universe.particles.getSize(); i++) {
+    universe.particles[i].applyForce(vec);
+  }
+    for (int i = 0; i < universe.moons.getSize(); i++) {
+    universe.moons[i].applyForce(vec);
+  }
+  for (int i = 0; i < universe.planets.getSize(); i++) {
+    universe.planets[i].applyForce(vec);
+  }
+  for (int i = 0; i < universe.giants.getSize(); i++) {
+    universe.giants[i].applyForce(vec);
+  }
 }
 
-void loop() {}
+void setup() {
+  //Init the display
+  LedStrip<DISPLAY_PIN, LEDMATRIX_COUNT> theDisplay;
+  //Create and init the Rocket
+  
+  Apollo = initRocket(Apollo); // WHY DOES THIS COMPILE! Isn't Apollo on the stack??
+  //Draw the Rocket to the LED
+  theDisplay.drawTo(Apollo.pixels);
+
+  //Draw the Crosshair
+  theDisplay.clearAll();
+  
+  window = initAstroWindow(window);
+  theDisplay.drawTo(window.pixels);
+
+  universe = letThereBeLight(universe);
+}
+
+void loop() {
+  PixVector v = PixVector();
+  v.randFloat();
+  flyGirl(v);
+}
+

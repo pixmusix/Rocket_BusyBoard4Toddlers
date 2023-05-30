@@ -192,5 +192,11 @@ class PixVector {
     double v2mag = sqrt(v2.x * v2.x + v2.y * v2.y);
     return (float) acos(dot / (v1mag * v2mag));
   }
+
+  void randFloat() {
+    //TODO : This needs a new seed each time;
+    x = random(1000) / 1000;
+    y = random(1000) / 1000;
+  }
 };
 

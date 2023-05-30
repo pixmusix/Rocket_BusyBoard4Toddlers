@@ -1,12 +1,14 @@
 from PIL import Image
 import numpy as np
+import sys
 
-img = Image.open(r'Assets\Rocket64.bmp')
+np.set_printoptions(threshold=sys.maxsize)
+
+img = Image.open(r'Crosshair.bmp')
 bmpdata = np.array(img)
-
 strbmp = repr(bmpdata)
 strbmp = strbmp.replace("[", "{")
 strbmp = strbmp.replace("]", "}")
-
-with open('rocketRGB.h', 'w') as f:
+print(strbmp)
+with open('CrosshairRGB.txt', 'w') as f:
     f.write(strbmp)

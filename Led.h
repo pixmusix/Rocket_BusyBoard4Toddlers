@@ -59,4 +59,16 @@ template<byte pin, int sz> class LedStrip {
       }
     }
 
+    void drawTo(CRGB externalMatrix[]) { 
+      for (int i = 0; i < sz; i++) {
+        matrix[i] += externalMatrix[i];
+      }
+    }
+
+    void clearAll() {
+      for (int i = 0; i < sz; i++) {
+        matrix[i].setRGB(0,0,0);
+      }
+    }
+
 };

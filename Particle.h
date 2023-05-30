@@ -1,3 +1,5 @@
+
+#pragma once
 #include "PixVector.h"
 #include <FastLED.h>
 #include "Globals.h"
