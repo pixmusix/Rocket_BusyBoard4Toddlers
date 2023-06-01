@@ -8,46 +8,63 @@
 #include <FastLED.h>
 
 const byte DISPLAY_PIN = 41;
+LedStrip<DISPLAY_PIN, LEDMATRIX_COUNT> theDisplay;
 Rocket Apollo;
-AstroWindow window;
-Space universe;
+AstroWindow Window;
+Space Universe;
 
 void flyGirl(PixVector vec) {
-  for (int i = 0; i < universe.particles.getSize(); i++) {
-    universe.particles[i].applyForce(vec);
+  /*We don't want the planets to move in the direction of the joystick.
+  Instead we want us, the cursor to move with the joystick. 
+  The simplest way is to make the planets move in the opposite direction.
+  This creates the illusion of movement. */
+  vec.mult(-1);
+
+  for (int i = 0; i < Universe.particles.getSize(); i++) {
+    Universe.particles[i].applyForce(vec);
   }
-    for (int i = 0; i < universe.moons.getSize(); i++) {
-    universe.moons[i].applyForce(vec);
+    for (int i = 0; i < Universe.moons.getSize(); i++) {
+    Universe.moons[i].applyForce(vec);
   }
-  for (int i = 0; i < universe.planets.getSize(); i++) {
-    universe.planets[i].applyForce(vec);
+  for (int i = 0; i < Universe.planets.getSize(); i++) {
+    Universe.planets[i].applyForce(vec);
   }
-  for (int i = 0; i < universe.giants.getSize(); i++) {
-    universe.giants[i].applyForce(vec);
+  for (int i = 0; i < Universe.giants.getSize(); i++) {
+    Universe.giants[i].applyForce(vec);
   }
 }
 
-void setup() {
-  //Init the display
-  LedStrip<DISPLAY_PIN, LEDMATRIX_COUNT> theDisplay;
-  //Create and init the Rocket
-  
-  Apollo = initRocket(Apollo); // WHY DOES THIS COMPILE! Isn't Apollo on the stack??
-  //Draw the Rocket to the LED
+void paintTheSky() {
+  for (int i = 0; i < Universe.particles.getSize(); i++) {
+    theDisplay.drawTo(Universe.particles[i].paint().matrix);
+  }
+  for (int i = 0; i < Universe.moons.getSize(); i++) {
+    theDisplay.drawTo(Universe.moons[i].paint().matrix);
+  }
+  for (int i = 0; i < Universe.planets.getSize(); i++) {
+    theDisplay.drawTo(Universe.planets[i].paint().matrix);
+  }
+  for (int i = 0; i < Universe.giants.getSize(); i++) {
+    theDisplay.drawTo(Universe.giants[i].paint().matrix);
+  }
+}
+
+void setup() { 
+  Apollo = initRocket(Apollo);
   theDisplay.drawTo(Apollo.pixels);
 
-  //Draw the Crosshair
   theDisplay.clearAll();
   
-  window = initAstroWindow(window);
-  theDisplay.drawTo(window.pixels);
+  Window = initAstroWindow(Window);
+  theDisplay.drawTo(Window.pixels);
 
-  universe = letThereBeLight(universe);
+  Universe = letThereBeLight(Universe);
 }
 
 void loop() {
   PixVector v = PixVector();
   v.randFloat();
   flyGirl(v);
+  paintTheSky();
 }
 
