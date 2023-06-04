@@ -46,6 +46,15 @@ template<byte pin, byte clk> class SevenSegment {
 // This wrapper for keypad.h simply abstracts the setup for us <3
 template<byte startingPin> class NumPad {
 
+  private:
+    byte col2 = startingPin;
+    byte row1 = startingPin + 1;
+    byte col1 = startingPin + 2;
+    byte row4 = startingPin + 3;
+    byte col3 = startingPin + 4;
+    byte row3 = startingPin + 5;
+    byte row2 = startingPin + 6;
+
   protected:
     char pad[4][3] = {
       {'1','2','3'},
@@ -56,10 +65,10 @@ template<byte startingPin> class NumPad {
 
     char cache[4] = {'0', '0', '0', '0'};
 
-    byte pin_rows[4] = {startingPin + 6, startingPin + 5, startingPin + 3, startingPin + 1}; //connect to the row pinouts of the keypad
-    byte pin_column[3] = {startingPin + 4, startingPin + 2, startingPin}; //connect to the column pinouts of the keypad
+    byte pin_rows[4] = {row1, row2, row3, row4}; //connect to the row pinouts of the keypad
+    byte pin_columns[3] = {col1, col2, col3}; //connect to the column pinouts of the keypad
 
-    Keypad keys = Keypad( makeKeymap(pad), pin_rows, pin_column, 4, 3 );
+    Keypad keys = Keypad( makeKeymap(pad), pin_rows, pin_columns, 4, 3 );
 
     int toNumeral(char k) {
       switch (k) {
@@ -79,19 +88,26 @@ template<byte startingPin> class NumPad {
         cache[i] = cache[j];
       }
       cache[3] = first;
+      Serial.println(cache);
     }
 
     void update() {
       char key = keys.getKey();
-      rotateLeft();
-      cache[3] = key;
+      if (key != NO_KEY){
+        Serial.println(key);
+        rotateLeft();
+        cache[3] = key;
+      }
     }
 
   public:
 
-    NumPad() {     
-      for (int pin = startingPin; pin < startingPin + 8; pin++) {
-        pinMode(pin, OUTPUT);
+    NumPad() {
+      for (int i = 0; i < 3; i++) {
+        pinMode(pin_columns[i], INPUT);
+      }
+      for (int i = 0; i < 4; i++) {
+        pinMode(pin_rows[i], OUTPUT);
       }
     }
 

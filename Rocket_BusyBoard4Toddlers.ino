@@ -18,12 +18,12 @@ NumPad<NUMPAD_PIN> Keys;
 int frameCount;
 
 void setup() {
+  Serial.begin(9600);
 }
 
 void loop() {
   int k = Keys.getNum();
   Sevseg.displayInt(k);
-  delay(5000);
 }
 
 // const byte DISPLAY_PIN = 41;
