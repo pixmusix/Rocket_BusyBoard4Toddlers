@@ -70,5 +70,4 @@ template<byte pin, int sz> class LedStrip {
         matrix[i].setRGB(0,0,0);
       }
     }
-
 };
