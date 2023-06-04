@@ -2,6 +2,7 @@
 #include <TM1637Display.h>
 #include <Keypad.h>
 
+/* This wrapper for TM1637 chipset abstracts the set-up for us. */
 template<byte pin, byte clk> class SevenSegment {
 
   protected:
@@ -43,7 +44,7 @@ template<byte pin, byte clk> class SevenSegment {
 
 };
 
-// This wrapper for keypad.h simply abstracts the setup for us <3
+/* This wrapper for keypad.h simply abstracts the setup for us <3. */
 template<byte startingPin> class NumPad {
 
   private:
@@ -65,8 +66,8 @@ template<byte startingPin> class NumPad {
 
     char cache[4] = {'0', '0', '0', '0'};
 
-    byte pin_rows[4] = {row1, row2, row3, row4}; //connect to the row pinouts of the keypad
-    byte pin_columns[3] = {col1, col2, col3}; //connect to the column pinouts of the keypad
+    byte pin_rows[4] = {row1, row2, row3, row4};
+    byte pin_columns[3] = {col1, col2, col3};
 
     Keypad keys = Keypad( makeKeymap(pad), pin_rows, pin_columns, 4, 3 );
 

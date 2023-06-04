@@ -1,3 +1,5 @@
+
+/* Abstraction of any object with a binary state. */
 class Toggle {
   
   protected:

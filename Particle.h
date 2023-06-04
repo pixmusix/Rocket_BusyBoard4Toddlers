@@ -68,6 +68,7 @@ class Particle {
     }
 };
 
+/* A planet is a particle with size and mass */
 class Planet : public Particle {
   
   public:
@@ -104,6 +105,7 @@ class Planet : public Particle {
     }
 };
 
+/* a moon is just a small planet */
 class Moon : public Planet {
   
   public:
@@ -121,6 +123,7 @@ class Moon : public Planet {
     }
 };
 
+/* a giant is just a big planet */
 class GiantPlanet : public Planet {
   
   public:

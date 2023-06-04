@@ -1,3 +1,5 @@
+/* This header file contains objects representing pixel collections for rendering on our LEDs. */
+
 #include "Globals.h"
 #include "RGBData.h"
 #include "Particle.h"

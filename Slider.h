@@ -1,3 +1,6 @@
+#include "PixVector.h"
+
+/* Abstracts a variable resistor with non-binary state. */
 class Slider {
   
   protected:
@@ -23,6 +26,7 @@ class Slider {
 
 };
 
+/* A dial is just a slider where angle matters. */
 class Dial : public Slider {
   
   public:
@@ -39,4 +43,25 @@ class Dial : public Slider {
       return rad;
     }
 
+};
+
+/* A joystick is really just two perpendicular variable resistors.
+  This can be abstracted as two sliders. */
+template<byte pinX, byte pinY> class Joystick {
+
+  private:
+
+    Slider axisX = Slider(pinX);
+    Slider axisY = Slider(pinY);
+
+  public:
+
+    Joystick() {}
+
+    PixVector getVector() {
+      float x = map(axisX.getValue(), 0, 1023, 0., 1.);
+      float y = map(axisY.getValue(), 0, 1023, 0., 1.);
+      PixVector vec = PixVector(x,y);
+      return vec;
+    }
 };
