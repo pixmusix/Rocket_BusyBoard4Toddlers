@@ -1,11 +1,12 @@
 #include "PixVector.h"
+#include "Globals.h"
 
 /* Abstracts a variable resistor with non-binary state. */
 class Slider {
   
   protected:
     byte pin;
-    byte val;
+    int val;
 
     void update() {
       val = analogRead(pin);
@@ -13,13 +14,13 @@ class Slider {
   
   public:
 
+    Slider() {}
+
     Slider(byte pin) {
       this->pin = pin;
-      pinMode(pin, INPUT);
-      update();
     }
 
-    byte getValue() {
+    int getValue() {
       update();
       return val;
     }
@@ -33,13 +34,11 @@ class Dial : public Slider {
 
     Dial(byte pin) : Slider { pin } {
       this->pin = pin;
-      pinMode(pin, INPUT);
-      update();
     }
 
     float getAngle() {
       update();
-      float rad = map(val, 0, 255, 0, TWO_PI);
+      float rad = (val / 1023.0) * TWO_PI;
       return rad;
     }
 
@@ -51,17 +50,26 @@ template<byte pinX, byte pinY> class Joystick {
 
   private:
 
-    Slider axisX = Slider(pinX);
-    Slider axisY = Slider(pinY);
+    Slider axisX;
+    Slider axisY;
 
   public:
 
-    Joystick() {}
+    Joystick() : axisX(pinX), axisY(pinY) {}
 
     PixVector getVector() {
-      float x = map(axisX.getValue(), 0, 1023, 0., 1.);
-      float y = map(axisY.getValue(), 0, 1023, 0., 1.);
+      float x = fmap(axisX.getValue(), 0, 1023, -1., 1.);
+      float y = fmap(axisY.getValue(), 0, 1023, -1., 1.);
+      Serial.print(x);
+      Serial.print("  ");
+      Serial.println(y);
       PixVector vec = PixVector(x,y);
       return vec;
+    }
+
+    float getMag() {
+      PixVector pixV = getVector();
+      pixV.absolute();
+      return min(pixV.mag(), 1.);
     }
 };

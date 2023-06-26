@@ -10,20 +10,13 @@
 #include <TM1637Display.h>
 #include <Keypad.h>
 
-const byte CLOCK = 22;
-const byte SEVSEG_PIN = 23;
-const byte NUMPAD_PIN = 24;
-SevenSegment<SEVSEG_PIN, CLOCK> Sevseg;
-NumPad<NUMPAD_PIN> Keys;
-int frameCount;
-
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(4800);
+  delay(1000);
+  Serial.println("Hello <3");
 }
 
 void loop() {
-  int k = Keys.getNum();
-  Sevseg.displayInt(k);
 }
 
 // const byte DISPLAY_PIN = 41;

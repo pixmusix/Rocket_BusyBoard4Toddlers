@@ -89,11 +89,10 @@ template<byte startingPin> class NumPad {
         cache[i] = cache[j];
       }
       cache[3] = first;
-      Serial.println(cache);
     }
 
     void update() {
-      char key = keys.getKey();
+      char key = keys.getKey();    
       if (key != NO_KEY){
         Serial.println(key);
         rotateLeft();

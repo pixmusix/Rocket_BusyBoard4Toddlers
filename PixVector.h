@@ -198,5 +198,10 @@ class PixVector {
     x = random(1000) / 1000;
     y = random(1000) / 1000;
   }
+
+  void absolute() {
+    x = abs(x);
+    y = abs(y);
+  }
 };
 

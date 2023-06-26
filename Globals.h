@@ -9,4 +9,10 @@ struct Led64 {
   CRGB matrix[64] = {};
 };
 
+float fmap(float x, float a, float b, float c, float d)
+{
+      float f=x/(b-a)*(d-c)+c;
+      return f;
+}
+
 #endif /* GLOBALS_H */
