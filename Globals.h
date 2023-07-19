@@ -2,8 +2,8 @@
 #define GLOBALS_H
 
 const int LEDMATRIX_COUNT = 64;
-const int LEDMATRIX_XDIM = 16;
-const int LEDMATRIX_YDIM = 16;
+const int LEDMATRIX_XDIM = 8;
+const int LEDMATRIX_YDIM = 8;
 
 struct Led64 {
   CRGB matrix[64] = {};

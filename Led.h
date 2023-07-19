@@ -69,19 +69,21 @@ template<byte pin, int sz> class LedStrip {
       if (!(i < 0 || i >= sz)) {
         matrix[i].setRGB(r,g ,b);
       }
+      ledPop();
     }
 
     void drawTo(CRGB externalMatrix[]) { 
       for (int i = 0; i < sz; i++) {
         matrix[i] += externalMatrix[i];
       }
+      ledPop();
     }
 
     void setRandomAll() {
       for (int i = 0; i < sz; i++) {
-        byte r = random(30);
-        byte g = random(30);
-        byte b = 0;
+        byte r = random(1,10);
+        byte g = random(1,10);
+        byte b = random(1,10);
         matrix[i].setRGB(r,g ,b);
       }
       ledPop();

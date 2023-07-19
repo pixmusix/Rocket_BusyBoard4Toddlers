@@ -195,8 +195,8 @@ class PixVector {
 
   void randFloat() {
     //TODO : This needs a new seed each time;
-    x = random(1000) / 1000;
-    y = random(1000) / 1000;
+    x = (random(100000) / 50000) - 1.0;
+    y = (random(100000) / 50000) - 1.0;
   }
 
   void absolute() {

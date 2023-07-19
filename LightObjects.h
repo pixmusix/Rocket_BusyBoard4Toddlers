@@ -15,9 +15,9 @@ struct Rocket {
 /* Populate a Rocket with Default Values */
 Rocket initRocket(Rocket a) {
   // Set RBG Pixel Values
-  for (int j = 0; j < 16; j++) {
-    for (int i = 0; i < 16; i++) {
-      a.pixels[i+j*16].setRGB(
+  for (int j = 0; j < 8; j++) {
+    for (int i = 0; i < 8; i++) {
+      a.pixels[i+j*8].setRGB(
         rocketRGBData[i][j][0], 
         rocketRGBData[i][j][1], 
         rocketRGBData[i][j][2]
@@ -40,9 +40,9 @@ struct AstroWindow {
 
 AstroWindow initAstroWindow(AstroWindow a) {
   // Set RBG Pixel Values
-  for (int j = 0; j < 16; j++) {
-    for (int i = 0; i < 16; i++) {
-      a.pixels[i+j*16].setRGB(
+  for (int j = 0; j < 8; j++) {
+    for (int i = 0; i < 8; i++) {
+      a.pixels[i+j*8].setRGB(
         crosshairRGBData[i][j][0], 
         crosshairRGBData[i][j][1], 
         crosshairRGBData[i][j][2]
