@@ -10,13 +10,31 @@
 #include <TM1637Display.h>
 #include <Keypad.h>
 
-const byte DISPLAY_PIN = 40;
-const byte DISPLAY_BACK = 22;
-LedStrip<DISPLAY_PIN, 64> theDisplay;
+//Pin Definitions
+const int DISPLAYPIN_NW = 22;
+const int DISPLAYPIN_NE = 24;
+const int DISPLAYPIN_SW = 26;
+const int DISPLAYPIN_SE = 28;
+
+//Objects
+struct QuadMatrix {
+  LedStrip<DISPLAYPIN_NW, LEDMATRIX_COUNT> NW;
+  LedStrip<DISPLAYPIN_NE, LEDMATRIX_COUNT> NE;
+  LedStrip<DISPLAYPIN_SW, LEDMATRIX_COUNT> SW;
+  LedStrip<DISPLAYPIN_SE, LEDMATRIX_COUNT> SE;
+
+  void drawTo(Led256) {
+    //Logic to draw to display (unwrapping the matrix)
+  }
+};
+
 Rocket Apollo;
 AstroWindow Window;
 Space Universe;
+QuadMatrix theDisplay;
 
+
+//Functions;
 void flyGirl(PixVector vec) {
   /*We don't want the planets to move in the direction of the joystick.
   Instead we want us, the cursor to move with the joystick. 
@@ -40,46 +58,24 @@ void flyGirl(PixVector vec) {
 
 void paintTheSky() {
   for (int i = 0; i < Universe.particles.getSize(); i++) {
-    theDisplay.drawTo(Universe.particles[i].paint().matrix);
+    theDisplay.drawTo(Universe.particles[i].paint());
   }
   for (int i = 0; i < Universe.moons.getSize(); i++) {
-    theDisplay.drawTo(Universe.moons[i].paint().matrix);
+    theDisplay.drawTo(Universe.moons[i].paint());
   }
   for (int i = 0; i < Universe.planets.getSize(); i++) {
-    theDisplay.drawTo(Universe.planets[i].paint().matrix);
+    theDisplay.drawTo(Universe.planets[i].paint());
   }
   for (int i = 0; i < Universe.giants.getSize(); i++) {
-    theDisplay.drawTo(Universe.giants[i].paint().matrix);
+    theDisplay.drawTo(Universe.giants[i].paint());
   }
 }
 
 void setup() { 
-  
   Serial.begin(4800);
   Serial.println("Hello <3");
-  pinMode(DISPLAY_BACK, INPUT);
-  //Apollo = initRocket(Apollo);
-  theDisplay.clearAll();
-  delay(2000);
-  theDisplay.setRandomAll();
- // theDisplay.drawTo(Apollo.pixels);
-  Serial.println("DONE! <3");
-
-  // delay(10000); //Pause here to see rocket
-
-  // theDisplay.clearAll();
-  
-  // Window = initAstroWindow(Window);
-  // theDisplay.drawTo(Window.pixels);
-
-  // Universe = letThereBeLight(Universe);
 }
 
 void loop() {
-  // PixVector v = PixVector();
-  // v.randFloat();
-  // flyGirl(v);
-  // paintTheSky();
-  // delay(1500);
 }
 

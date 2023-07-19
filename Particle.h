@@ -59,10 +59,14 @@ class Particle {
     }
 
     /* Returns an CRGB Array reprosenting the position of this particle*/
-    Led64 paint() {
-      Led64 grid;
-      int ledY = LEDMATRIX_YDIM;
-      float idx = (location.x + location.y * ledY);
+    Led256 paint() {
+      Led256 grid;
+      int ledX = LEDDISPLAY_XDIM;
+      int ledY = LEDDISPLAY_YDIM;
+      PixVector loc = location;
+      loc.wrap(min(ledX, ledY));
+      loc.absolute();
+      float idx = loc.x + (loc.y * ledY);
       grid.matrix[(int)idx].setRGB(red, green, blue);
       return grid;
     }
@@ -85,14 +89,17 @@ class Planet : public Particle {
     }
 
     /* Return an CRGB Array reprosenting the position of this Planet*/
-    Led64 paint() {
-      Led64 grid;
-      int ledX = LEDMATRIX_XDIM;
-      int ledY = LEDMATRIX_YDIM;
+    Led256 paint() {
+      Led256 grid;
+      int ledX = LEDDISPLAY_XDIM;
+      int ledY = LEDDISPLAY_YDIM;
       for (int j = 0; j < ledX; j++) {
         for (int i = 0; i < ledY; i++) {
           PixVector idx = PixVector(i,j);
-          float h = idx.dist(location);
+          PixVector loc = location;
+          loc.wrap(min(ledX, ledY));
+          loc.absolute();
+          float h = idx.dist(loc);
           if (h < size) {
             int r = red - ceil(h);
             int g = green - ceil(h);

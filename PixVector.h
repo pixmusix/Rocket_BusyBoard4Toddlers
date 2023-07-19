@@ -195,6 +195,8 @@ class PixVector {
 
   void randFloat() {
     //TODO : This needs a new seed each time;
+
+    //future jonny here ... wtf is this? Is there seriously not a better way??
     x = (random(100000) / 50000) - 1.0;
     y = (random(100000) / 50000) - 1.0;
   }
@@ -202,6 +204,11 @@ class PixVector {
   void absolute() {
     x = abs(x);
     y = abs(y);
+  }
+
+  void wrap(float k) {
+    x = fmod(x,k);
+    y = fmod(y,k);
   }
 };
 
