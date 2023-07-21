@@ -11,10 +11,19 @@
 #include <Keypad.h>
 
 //Pin Definitions
-const int DISPLAYPIN_NW = 22;
-const int DISPLAYPIN_NE = 24;
-const int DISPLAYPIN_SW = 26;
-const int DISPLAYPIN_SE = 28;
+const byte DISPLAYPIN_NW = 22;
+const byte DISPLAYPIN_NE = 24;
+const byte DISPLAYPIN_SW = 26;
+const byte DISPLAYPIN_SE = 28;
+
+const byte RB_IN = 52;
+const byte RB_OUT = 50;
+const byte DIAL_IN = A0;
+const byte BTN_IN = 41;
+
+int phasor = 0;
+
+/* -------------------------------- */
 
 //Objects
 struct QuadMatrix {
@@ -45,13 +54,18 @@ struct QuadMatrix {
     SW.drawTo(subMatrix[2].matrix);
     SE.drawTo(subMatrix[3].matrix);
   }
-};
+}; 
 
 Rocket Apollo;
 AstroWindow Window;
 Space Universe;
 QuadMatrix theDisplay;
 
+Dial RedDial = Dial(DIAL_IN); 
+LedStrip<RB_OUT, LEDRAINBOW_COUNT> LaunchRainbow;
+Button LaunchButton = Button(BTN_IN);
+
+/* -------------------------------- */
 
 //Functions;
 void flyGirl(PixVector vec) {
@@ -89,11 +103,26 @@ void paintTheSky() {
   }
 }
 
+/* -------------------------------- */
+
 void setup() { 
-  Serial.begin(4800);
+  Serial.begin(9600);
+  delay(2500);
   Serial.println("Hello <3");
+
+  pinMode(RB_IN, INPUT);
+  pinMode(RB_OUT, OUTPUT);
 }
 
 void loop() {
+  float redDial_Angle = RedDial.getAngle();
+  int rb_val = (int)floor(fmap(redDial_Angle, 0.0, TWO_PI, 13.0, 0.0)) + 1;
+  if (LaunchButton.isPressed()) {
+    LaunchRainbow.sweepTo(rb_val, 200, 6, 15);
+  } else {
+    LaunchRainbow.meterTo(rb_val, 200, 6, 15);
+  }
+  delay(33);
+  phasor += 1;
 }
 
