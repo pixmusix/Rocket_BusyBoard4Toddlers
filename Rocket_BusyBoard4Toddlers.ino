@@ -11,15 +11,10 @@
 #include <Keypad.h>
 
 //Pin Definitions
-const byte DISPLAYPIN_NW = 22;
-const byte DISPLAYPIN_NE = 24;
-const byte DISPLAYPIN_SW = 26;
-const byte DISPLAYPIN_SE = 28;
-
-const byte RB_IN = 52;
-const byte RB_OUT = 50;
-const byte DIAL_IN = A0;
-const byte BTN_IN = 41;
+const byte DISPLAYPIN_NW = 40;
+const byte DISPLAYPIN_NE = 42;
+const byte DISPLAYPIN_SW = 44;
+const byte DISPLAYPIN_SE = 46;
 
 int phasor = 0;
 
@@ -42,11 +37,17 @@ struct QuadMatrix {
     Led64 subMatrix[4] = {};
     for (int j = 0; j < ydim; j++) {
       for (int i = 0; i < xdim; i++) {
+        //Convert from 1D to 2D
         int idx = i + (j * ydim);
-        int subidx = (int)floor((((idx - 8) % 16) + idx) / 2) % 64;
+        //Convert the display index to this LED tile's index. 
+        int subidx = abs(idx + 8) % 16;
+        subidx = (subidx + idx) / 2.0;
+        subidx = (subidx - 4) % 64;
+        //Find the subMatrix number and assign it to the right pixel/
         int p = floor(i / 8);
         int q = (floor(j / 8) + 1) * 2;
         subMatrix[q + p - 2].matrix[subidx] = px.matrix[idx];
+        Serial.println(i);
       }
     }
     NW.drawTo(subMatrix[0].matrix);
@@ -60,10 +61,6 @@ Rocket Apollo;
 AstroWindow Window;
 Space Universe;
 QuadMatrix theDisplay;
-
-Dial RedDial = Dial(DIAL_IN); 
-LedStrip<RB_OUT, LEDRAINBOW_COUNT> LaunchRainbow;
-Button LaunchButton = Button(BTN_IN);
 
 /* -------------------------------- */
 
@@ -110,19 +107,10 @@ void setup() {
   delay(2500);
   Serial.println("Hello <3");
 
-  pinMode(RB_IN, INPUT);
-  pinMode(RB_OUT, OUTPUT);
+  Apollo = initRocket(Apollo);
+  theDisplay.drawTo(Apollo.getLed256());
 }
 
 void loop() {
-  float redDial_Angle = RedDial.getAngle();
-  int rb_val = (int)floor(fmap(redDial_Angle, 0.0, TWO_PI, 13.0, 0.0)) + 1;
-  if (LaunchButton.isPressed()) {
-    LaunchRainbow.sweepTo(rb_val, 200, 6, 15);
-  } else {
-    LaunchRainbow.meterTo(rb_val, 200, 6, 15);
-  }
-  delay(33);
-  phasor += 1;
 }
 

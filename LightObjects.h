@@ -6,18 +6,38 @@
 #include <FastLED.h>
 #include <List.hpp>
 
+Led256 getLEDDisplayTestImg() {
+  Led256 displayTestImg;
+  for (int i = 0; i < 256; i++) {
+    CRGB pix;
+    int m = 40;
+    int v = map(i, 0, 255, 0, m);
+    pix.setRGB(v, 0, m - v);
+    displayTestImg.matrix[i] = pix;
+  }
+  return displayTestImg;
+}
+
 struct Rocket {
-  CRGB pixels[64];
+  CRGB pixels[256];
   char fuel;
   bool armed;
+
+  Led256 getLed256() {
+    Led256 leds;
+    for (int i = 0; i < 256; i++) {
+      leds.matrix[i] = pixels[i];
+    }
+    return leds;
+  }
 };
 
 /* Populate a Rocket with Default Values */
 Rocket initRocket(Rocket a) {
   // Set RBG Pixel Values
-  for (int j = 0; j < 8; j++) {
-    for (int i = 0; i < 8; i++) {
-      a.pixels[i+j*8].setRGB(
+  for (int j = 0; j < LEDDISPLAY_YDIM; j++) {
+    for (int i = 0; i < LEDDISPLAY_XDIM; i++) {
+      a.pixels[i+j*LEDDISPLAY_YDIM].setRGB(
         rocketRGBData[i][j][0], 
         rocketRGBData[i][j][1], 
         rocketRGBData[i][j][2]
