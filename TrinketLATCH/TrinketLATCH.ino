@@ -3,6 +3,7 @@
 const int Q = 3;
 const int S = 2;
 const int R = 0;
+const int B = 4;
 bool LATCHED = false;
 bool PHASOR = false;
 
@@ -42,7 +43,7 @@ void loop() {
 
 
   if (digitalRead(S)) {
-    LATCHED = bool(phasor);
+    LATCHED = PHASOR;
   } else {
     PHASOR = true;
   }
