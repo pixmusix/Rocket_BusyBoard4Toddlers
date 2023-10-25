@@ -16,6 +16,9 @@ const byte DISPLAYPIN_NE = 42;
 const byte DISPLAYPIN_SW = 44;
 const byte DISPLAYPIN_SE = 46;
 
+const byte INTERRUPT = 2;
+const byte LATCH = 3;
+
 int phasor = 0;
 
 /* -------------------------------- */
@@ -65,6 +68,7 @@ QuadMatrix theDisplay;
 /* -------------------------------- */
 
 //Functions;
+
 void flyGirl(PixVector vec) {
   /* We want the cursor, not the planets, to move with the joystick. 
   Let's make the particles move in the opposite direction.
@@ -102,10 +106,24 @@ void paintTheSky() {
 
 /* -------------------------------- */
 
+void render() {
+  Serial.println()("Interupted!")
+  delay(3000);
+
+  // Tell the latch we have completed our render.
+  digitWrite(LATCH, HIGH);
+  digitWrite(LATCH, LOW);
+}
+
 void setup() { 
   Serial.begin(9600);
   delay(2500);
   Serial.println("Hello <3");
+
+  pinMode(INTERRUPT, INPUT_PULLUP);
+  pintMode(LATCH, OUTPUT);
+  
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT), render, HIGH);
 
   Apollo = initRocket(Apollo);
   theDisplay.drawTo(Apollo.getLed256());
