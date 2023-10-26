@@ -2,7 +2,7 @@
 #include "Led.h"
 #include "Slider.h"
 #include "SevSegs.h"
-#include "PixVector.h"
+#include "Vect.h"
 #include "Particle.h"
 #include "LightObjects.h"
 #include "Globals.h"
@@ -19,10 +19,13 @@ const byte DISPLAYPIN_SE = 46;
 const byte INTERRUPT = 2;
 const byte LATCH = 3;
 
-int phasor = 0;
+const byte LAUNCHSWITCH_PIN = 22;
+const byte LAUNCHDIAL_PIN = 23; 
+const byte LAUNCHBUTTON_PIN = 24;
+const byte LAUNCHRAINBOW_PIN = 25;
+const byte LAUNCHLED_PIN = 26;
 
 /* -------------------------------- */
-
 //Objects
 struct QuadMatrix {
   LedStrip<DISPLAYPIN_NW, LEDMATRIX_COUNT> NW;
@@ -50,7 +53,6 @@ struct QuadMatrix {
         int p = floor(i / 8);
         int q = (floor(j / 8) + 1) * 2;
         subMatrix[q + p - 2].matrix[subidx] = px.matrix[idx];
-        Serial.println(i);
       }
     }
     NW.drawTo(subMatrix[0].matrix);
@@ -65,11 +67,18 @@ AstroWindow Window;
 Space Universe;
 QuadMatrix theDisplay;
 
+Switch LaunchSwitch = Switch(LAUNCHSWITCH_PIN);
+Dial LaunchDial = Dial(LAUNCHDIAL_PIN);
+Button LaunchButton = Button(LAUNCHBUTTON_PIN);
+LedStrip<LAUNCHRAINBOW_PIN, LEDRAINBOW_COUNT> LaunchRainbow;
+Led LaunchLed = Led(LAUNCHLED_PIN);
+
+
 /* -------------------------------- */
 
 //Functions;
 
-void flyGirl(PixVector vec) {
+void flyGirl(Vect vec) {
   /* We want the cursor, not the planets, to move with the joystick. 
   Let's make the particles move in the opposite direction.
   The paralax creates the illusion of movement. */
@@ -104,31 +113,53 @@ void paintTheSky() {
   }
 }
 
+bool evaluateArmed() {
+  return LaunchSwitch.isArmed() & LaunchDial.getValue() > 1000;
+}
+
+bool evaluateLaunch() {
+  return evaluateArmed() & LaunchButton.isPressed();
+}
+
+bool evaluateStall() {
+  return Apollo.fuel.getFuelGage() < 0.05 | Apollo.velocity.mag() > 15.0;
+}
+
 /* -------------------------------- */
 
 void render() {
-  Serial.println()("Interupted!")
-  delay(3000);
-
+  if (evaluateArmed() & !Apollo.inTheSky) {
+    LaunchLed.blink();
+  } else {
+    LaunchLed.off();
+  }
+  if (Apollo.inTheSky) {
+    LaunchLed.on();
+  }
   // Tell the latch we have completed our render.
-  digitWrite(LATCH, HIGH);
-  digitWrite(LATCH, LOW);
+  digitalWrite(LATCH, HIGH);
+  digitalWrite(LATCH, LOW);
 }
 
 void setup() { 
   Serial.begin(9600);
-  delay(2500);
-  Serial.println("Hello <3");
 
   pinMode(INTERRUPT, INPUT_PULLUP);
-  pintMode(LATCH, OUTPUT);
+  pinMode(LATCH, OUTPUT);
+  digitalWrite(LATCH, LOW);
   
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT), render, HIGH);
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT), render, RISING);
 
   Apollo = initRocket(Apollo);
   theDisplay.drawTo(Apollo.getLed256());
 }
 
 void loop() {
+  Apollo.isArmed = evaluateArmed();
+  if (!Apollo.inTheSky) {
+    Apollo.inTheSky = evaluateLaunch();
+  } else {
+    Apollo.inTheSky = evaluateStall();
+  }
 }
 

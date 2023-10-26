@@ -1,4 +1,4 @@
-#include "PixVector.h"
+#include "Vect.h"
 #include "Globals.h"
 
 /* Abstracts a variable resistor with non-binary state. */
@@ -57,18 +57,18 @@ template<byte pinX, byte pinY> class Joystick {
 
     Joystick() : axisX(pinX), axisY(pinY) {}
 
-    PixVector getVector() {
+    Vect getVector() {
       float x = fmap(axisX.getValue(), 0, 1023, -1., 1.);
       float y = fmap(axisY.getValue(), 0, 1023, -1., 1.);
       Serial.print(x);
       Serial.print("  ");
       Serial.println(y);
-      PixVector vec = PixVector(x,y);
+      Vect vec = Vect(x,y);
       return vec;
     }
 
     float getMag() {
-      PixVector pixV = getVector();
+      Vect pixV = getVector();
       pixV.absolute();
       return min(pixV.mag(), 1.);
     }

@@ -18,10 +18,55 @@ Led256 getLEDDisplayTestImg() {
   return displayTestImg;
 }
 
+class Fueltank {
+
+  private:
+    float capacity;
+    float fuel;
+  
+  public:
+    bool empty;
+    
+    Fueltank(float cap) {
+      capacity = cap;
+      push(cap);
+    }
+
+    Fueltank() {
+      capacity = 0.0;
+      fuel = 0.0;
+      empty = true;
+    }
+
+    float getFuelVal() {
+      return fuel;
+    }
+
+    float getFuelGage() {
+      return (fuel / capacity) * 100.0;
+    }
+
+    float pull(float f) {
+      fuel -= f;
+      empty = (fuel <= 0.0);
+      return empty ? f - fuel : f;
+    }
+
+    void push(float f) {
+      fuel += min(f, capacity);
+      empty = (fuel <= 0.0);
+    }
+};
+
 struct Rocket {
   CRGB pixels[256];
-  char fuel;
-  bool armed;
+  Fueltank fuel;
+  bool isArmed;
+  bool inTheSky;
+  
+  Vect location;
+  Vect velocity;
+  Vect acceleraton;
 
   Led256 getLed256() {
     Led256 leds;
@@ -46,10 +91,14 @@ Rocket initRocket(Rocket a) {
   }
 
   // New Rocket; Needs Fuel
-  a.fuel = 0.0;
-
+  a.fuel = Fueltank(100.0);
   // Not armed yet
-  a.armed = false;
+  a.isArmed = false;
+  // Nor flying
+  a.inTheSky = false;
+  a.location = Vect();
+  a.velocity = Vect();
+  a.acceleraton = Vect();
 
   return a;
 }

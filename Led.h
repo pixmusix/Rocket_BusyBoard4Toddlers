@@ -2,22 +2,18 @@
 
 class Led {
 
-  private:
-
-    void init() {
-      pinMode(pin, OUTPUT);
-      off();
-    }
-
   protected:
 
     byte pin;
-
+    unsigned int cache;
+    
   public:
 
     Led(byte pin) {
       this->pin = pin;
-      init();
+      pinMode(pin, OUTPUT);
+      cache = 0;
+      off();
     }
 
     void on() {
@@ -28,30 +24,22 @@ class Led {
       digitalWrite(pin, LOW);
     }
 
+    void blink() {
+      cache += 1;
+      if (cache%2==0) {on();} else {off();}
+    }
+
 };
 
 template<byte pin, int sz> class LedStrip {
 
   protected:
 
-    int cache;
-
     CRGB matrix[sz];
+    unsigned int cache;
     
     void ledConfig() {
-      cache = 0;
       FastLED.addLeds<WS2812B, pin, GRB>(matrix, sz); 
-    }
-
-    void ledPop() {
-      FastLED.show();
-    }
-
-  public:
-
-    LedStrip() {     
-      pinMode(pin, OUTPUT);
-      ledConfig();
     }
 
     CRGB getPix(int i) {
@@ -61,20 +49,40 @@ template<byte pin, int sz> class LedStrip {
         return matrix[0];
       }
     }
-    
+
     void setPix(int i, byte r, byte g, byte b) {
-      // For a personal project like this, I'm happy to deal with the silent error.
+      // For a personal project, I'm happy to deal with the silent error.
       if (!(i < 0 || i >= sz)) {
         matrix[i].setRGB(r,g ,b);
       }
-      ledPop();
+    }
+    
+    void addPix(int i, byte r, byte g, byte b) {
+      // For a personal project, I'm happy to deal with the silent error.
+      if (!(i < 0 || i >= sz)) {
+        CRGB pix;
+        pix.setRGB(r,g ,b);
+        matrix[i] += pix;
+      }
+    }
+
+  public:
+
+    LedStrip() {     
+      pinMode(pin, OUTPUT);
+      cache = 0;
+      ledConfig();
+    }
+
+    void ledPop() {
+      cache += 1;
+      FastLED.show();
     }
 
     void drawTo(CRGB externalMatrix[]) { 
       for (int i = 0; i < sz; i++) {
         matrix[i] += externalMatrix[i];
       }
-      ledPop();
     }
 
     void setRandomAll() {
@@ -84,7 +92,6 @@ template<byte pin, int sz> class LedStrip {
         byte b = random(1,10);
         matrix[i].setRGB(r,g ,b);
       }
-      ledPop();
     }
 
     void meterTo(int k, byte r, byte g, byte b) {
@@ -93,24 +100,23 @@ template<byte pin, int sz> class LedStrip {
         setPix(i, r * m, g * m, b * m);
       }
       for (int i = k; i < sz; i++) {
-        matrix[i].setRGB(0,0,0);
+        setPix(i, 0, 0, 0);
       }
-      ledPop();
     }
 
     void sweepTo(int k, byte r, byte g, byte b) {
+      int upTo = cache % min(sz, k);
       for (int i = 0; i < sz; i++) {
-        if (i == cache) {
+        if (i == upTo) {
           matrix[i].setRGB(r,g,b);
         } else {
           matrix[i].setRGB(0,0,0);
         }
       }
-      ledPop();
-      cache = (cache + 1) % min(k, sz);
     }
 
-    void decayAll(float m) {
+    void multAll(float m) {
+      //consider using the native .fadeToBlack() or .setBrightness()
       for (int i = 0; i < sz; i++) {
         CRGB px = getPix(i);
         byte r = (byte)floor(px.r * m);
@@ -118,13 +124,24 @@ template<byte pin, int sz> class LedStrip {
         byte b = (byte)floor(px.b * m);
         setPix(i, r, g, b);
       }
-      ledPop();
+    }
+
+    void pulseAll() {
+      int k = sin16(cache);
+      int n = map(k, -32768, 32767, 0, 255);
+      float m = (float)n / 255.0;
+      for (int i = 0; i < sz; i++) {
+        CRGB px = getPix(i);
+        byte r = (byte)floor(px.r * m);
+        byte g = (byte)floor(px.g * m);
+        byte b = (byte)floor(px.b * m);
+        setPix(i, r, g, b);
+      }
     }
 
     void clearAll() {
       for (int i = 0; i < sz; i++) {
         matrix[i].setRGB(0,0,0);
       }
-      ledPop();
     }
 };

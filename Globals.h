@@ -1,6 +1,9 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+//vars for an LED STRIP;
+const int LEDSTRIP_COUNT = 8;
+
 // vars for an LED RAINBOW
 const int LEDRAINBOW_COUNT = 13;
 
@@ -13,6 +16,10 @@ const int LEDMATRIX_YDIM = 8;
 const int LEDDISPLAY_SIZE = 256;
 const int LEDDISPLAY_XDIM = 16;
 const int LEDDISPLAY_YDIM = 16;
+
+struct Led8 {
+  CRGB matrix[8] = {};
+};
 
 struct Led13 {
   CRGB matrix[13] = {};
