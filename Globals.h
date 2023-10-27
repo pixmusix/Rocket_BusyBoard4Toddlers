@@ -1,6 +1,26 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+//Pin Definitions
+const byte DISPLAYPIN_NW = 40;
+const byte DISPLAYPIN_NE = 42;
+const byte DISPLAYPIN_SW = 44;
+const byte DISPLAYPIN_SE = 46;
+
+const byte INTERRUPT = 2;
+const byte LATCH = 3;
+
+const byte ARMINGSWITCH_PIN = 22;
+const byte YAWDIAL_PIN = 23; 
+const byte LAUNCHBUTTON_PIN = 24;
+const byte RAINBOW_PIN = 25;
+const byte LAUNCHLED_PIN = 26;
+const byte MONITORSWITCH_PIN = 27;
+const byte CTRLBUTTON_PIN = 28;
+const byte ALTBUTTON_PIN = 29;
+const byte JOYX_PIN = 30;
+const byte JOYY_PIN = 31;
+
 //vars for an LED STRIP;
 const int LEDSTRIP_COUNT = 8;
 

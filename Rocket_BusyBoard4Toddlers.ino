@@ -10,74 +10,26 @@
 #include <TM1637Display.h>
 #include <Keypad.h>
 
-//Pin Definitions
-const byte DISPLAYPIN_NW = 40;
-const byte DISPLAYPIN_NE = 42;
-const byte DISPLAYPIN_SW = 44;
-const byte DISPLAYPIN_SE = 46;
-
-const byte INTERRUPT = 2;
-const byte LATCH = 3;
-
-const byte LAUNCHSWITCH_PIN = 22;
-const byte LAUNCHDIAL_PIN = 23; 
-const byte LAUNCHBUTTON_PIN = 24;
-const byte LAUNCHRAINBOW_PIN = 25;
-const byte LAUNCHLED_PIN = 26;
-
 /* -------------------------------- */
 //Objects
-struct QuadMatrix {
-  LedStrip<DISPLAYPIN_NW, LEDMATRIX_COUNT> NW;
-  LedStrip<DISPLAYPIN_NE, LEDMATRIX_COUNT> NE;
-  LedStrip<DISPLAYPIN_SW, LEDMATRIX_COUNT> SW;
-  LedStrip<DISPLAYPIN_SE, LEDMATRIX_COUNT> SE;
-
-  void drawTo(Led256 px) {
-    /* This func splits the 256 element array into 4 64 element arrays.
-    It devides the 16x16 square into 4 quadrents of 8x8: NW,NE,SW,SE Quadrants. 
-    p and q allows us to clarify which array we need to push to.
-    The link below demonstrates the equation that converts the idecies correctly. https://www.desmos.com/calculator/4a8hztwpvy */
-    int xdim = LEDDISPLAY_XDIM;
-    int ydim = LEDDISPLAY_YDIM;
-    Led64 subMatrix[4] = {};
-    for (int j = 0; j < ydim; j++) {
-      for (int i = 0; i < xdim; i++) {
-        //Convert from 1D to 2D
-        int idx = i + (j * ydim);
-        //Convert the display index to this LED tile's index. 
-        int subidx = abs(idx + 8) % 16;
-        subidx = (subidx + idx) / 2.0;
-        subidx = (subidx - 4) % 64;
-        //Find the subMatrix number and assign it to the right pixel/
-        int p = floor(i / 8);
-        int q = (floor(j / 8) + 1) * 2;
-        subMatrix[q + p - 2].matrix[subidx] = px.matrix[idx];
-      }
-    }
-    NW.drawTo(subMatrix[0].matrix);
-    NE.drawTo(subMatrix[1].matrix);
-    SW.drawTo(subMatrix[2].matrix);
-    SE.drawTo(subMatrix[3].matrix);
-  }
-}; 
-
 Rocket Apollo;
 AstroWindow Window;
 Space Universe;
 QuadMatrix theDisplay;
 
-Switch LaunchSwitch = Switch(LAUNCHSWITCH_PIN);
-Dial LaunchDial = Dial(LAUNCHDIAL_PIN);
+Switch BallisticSwitch = Switch(ARMINGSWITCH_PIN);
+Dial YawDial = Dial(YAWDIAL_PIN);
 Button LaunchButton = Button(LAUNCHBUTTON_PIN);
-LedStrip<LAUNCHRAINBOW_PIN, LEDRAINBOW_COUNT> LaunchRainbow;
+LedStrip<RAINBOW_PIN, LEDRAINBOW_COUNT> Rainbow;
 Led LaunchLed = Led(LAUNCHLED_PIN);
-
+Toggle MonitorSwitch = Toggle(MONITORSWITCH_PIN);
+Button CtrlKey = Button(CTRLBUTTON_PIN);
+Button AltKey = Button(ALTBUTTON_PIN);
+Joystick<JOYX_PIN, JOYY_PIN> JoyXY;
 
 /* -------------------------------- */
 
 //Functions;
-
 void flyGirl(Vect vec) {
   /* We want the cursor, not the planets, to move with the joystick. 
   Let's make the particles move in the opposite direction.
@@ -114,7 +66,7 @@ void paintTheSky() {
 }
 
 bool evaluateArmed() {
-  return LaunchSwitch.isArmed() & LaunchDial.getValue() > 1000;
+  return BallisticSwitch.isArmed() & YawDial.getValue() > 1000;
 }
 
 bool evaluateLaunch() {
@@ -128,6 +80,7 @@ bool evaluateStall() {
 /* -------------------------------- */
 
 void render() {
+  // Handle all three states of LED
   if (evaluateArmed() & !Apollo.inTheSky) {
     LaunchLed.blink();
   } else {
@@ -136,6 +89,9 @@ void render() {
   if (Apollo.inTheSky) {
     LaunchLed.on();
   }
+
+  // Draw to the rainbow.
+
   // Tell the latch we have completed our render.
   digitalWrite(LATCH, HIGH);
   digitalWrite(LATCH, LOW);
@@ -161,5 +117,7 @@ void loop() {
   } else {
     Apollo.inTheSky = evaluateStall();
   }
+  // Draw to the display.
+  paintTheSky();
 }
 
