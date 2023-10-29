@@ -25,6 +25,19 @@ class Particle {
       return Vect(rx, ry);
     }
 
+    /* Get a loctation (but it can't be in the DISPLAY or out of MAP) */
+    Vect spawn() {
+      location = randVec64();
+      // Force it to be on the map
+      location.wrap(MAP_XDIM);
+      // check if it's too close to the display
+      if (location.dist(Vect(8.5,8.5)) < 16) {
+        // lol...
+        return spawn()
+      }
+      return location;
+    }
+
   public:
 
     byte red;
@@ -40,7 +53,7 @@ class Particle {
       red = random(256);
       green = random(256);
       blue = random(256);
-      location = randVec64();
+      location = spawn();
       velocity = Vect(random(1,3),random(1,3));
       acceleration = Vect();
       mass = 1;
@@ -60,14 +73,21 @@ class Particle {
 
     /* Returns an CRGB Array reprosenting the position of this particle*/
     Led256 paint() {
+      // First we draw it to the map.
+      Led4096 canvas;
+      float idx = location.x + (location.y * MAP_XDIM);
+      canvas.matrix[(int)idx].setRGB(red, green, blue);
+      
+      // Then we take only the subset of that that corresponds to the display
       Led256 grid;
-      int ledX = LEDDISPLAY_XDIM;
-      int ledY = LEDDISPLAY_YDIM;
-      Vect loc = location;
-      loc.wrap(min(ledX, ledY));
-      loc.absolute();
-      float idx = loc.x + (loc.y * ledY);
-      grid.matrix[(int)idx].setRGB(red, green, blue);
+      // These offsets shift the display NW by half it's width
+      int offsetY = (int)floor(LEDDISPLAY_YDIM / 2);
+      int offsetX = (int)floor(LEDDISPLAY_XDIM / 2);
+      for (int j = offsetY * -1; j < LEDDISPLAY_YDIM * MAP_YDIM - offsetY; j = j + MAP_YDIM) {
+        for (int i = offsetX * -1; i < offsetX; i++) {
+          grid.matrix[i,j/MAP_YDIM] = canvas[i,j]
+        }
+      }
       return grid;
     }
 };
@@ -81,7 +101,7 @@ class Planet : public Particle {
       red = random(256);
       green = random(256);
       blue = random(256);
-      location = randVec64();
+      location = spawn();
       velocity = Vect(random(1,3),random(1,3));
       acceleration = Vect();
       mass = random(20, 40) / 3;
@@ -90,22 +110,29 @@ class Planet : public Particle {
 
     /* Return an CRGB Array reprosenting the position of this Planet*/
     Led256 paint() {
-      Led256 grid;
-      int ledX = LEDDISPLAY_XDIM;
-      int ledY = LEDDISPLAY_YDIM;
-      for (int j = 0; j < ledX; j++) {
-        for (int i = 0; i < ledY; i++) {
+      // We draw the plannet for indexes within our size_range of the IDX
+      Led4096 canvas;
+      for (int j = 0; j < MAP_YDIM; j++) {
+        for (int i = 0; i < MAP_XDIM; i++) {
           Vect idx = Vect(i,j);
-          Vect loc = location;
-          loc.wrap(min(ledX, ledY));
-          loc.absolute();
-          float h = idx.dist(loc);
+          float hypo = location.dist(idx);
           if (h < size) {
-            int r = red - ceil(h);
-            int g = green - ceil(h);
-            int b = blue - ceil(h);
+            int r = red - ceil(hypo);
+            int g = green - ceil(hypo);
+            int b = blue - ceil(hypo);
             grid.matrix[i + j * ledX].setRGB(r,g,b);
           }
+        }
+      }
+
+      // Then we take only the subset of that that corresponds to the display
+      Led256 grid;
+      // These offsets shift the display NW by half it's width
+      int offsetY = (int)floor(LEDDISPLAY_YDIM / 2);
+      int offsetX = (int)floor(LEDDISPLAY_XDIM / 2);
+      for (int j = offsetY * -1; j < LEDDISPLAY_YDIM * MAP_YDIM - offsetY; j = j + MAP_YDIM) {
+        for (int i = offsetX * -1; i < offsetX; i++) {
+          grid.matrix[i,j/MAP_YDIM] = canvas[i,j]
         }
       }
       return grid;
@@ -122,7 +149,7 @@ class Moon : public Planet {
       red = random(256);
       green = random(256);
       blue = random(256);
-      location = randVec64();
+      location = spawn();
       velocity = Vect(random(1,5),random(1,5));
       acceleration = Vect();
       mass = random(20, 40) / 6;
@@ -140,7 +167,7 @@ class GiantPlanet : public Planet {
       red = random(256);
       green = random(256);
       blue = random(256);
-      location = randVec64();
+      location = spawn();
       velocity = Vect(1,1);
       acceleration = Vect();
       mass = random(30, 50);

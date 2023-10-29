@@ -31,6 +31,7 @@ class Button : public Toggle {
   private:
 
     byte lastReading;
+    unsigned long timeDown = 0;
     unsigned long lastDebounceTime = 0;
     unsigned long debounceDelay = 50;
 
@@ -38,7 +39,10 @@ class Button : public Toggle {
       byte newReading = digitalRead(pin);
       
       if (newReading != lastReading) {
+        timeDown = 0;
         lastDebounceTime = millis();
+      } else {
+        timeDown += 0.01;
       }
       if (millis() - lastDebounceTime > debounceDelay) {
         state = newReading;
@@ -58,6 +62,11 @@ class Button : public Toggle {
 
     bool isPressed() {
       return (getState() == HIGH);
+    }
+
+    float getElapsed() {
+      float elap = (float)timeDown;
+      return abs(elap);
     }
 
 };

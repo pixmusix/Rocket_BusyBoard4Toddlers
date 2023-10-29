@@ -13,7 +13,7 @@
 /* -------------------------------- */
 //Objects
 Rocket Apollo;
-AstroWindow Window;
+HUD HUDWindow;
 Space Universe;
 QuadMatrix theDisplay;
 
@@ -30,7 +30,20 @@ Joystick<JOYX_PIN, JOYY_PIN> JoyXY;
 /* -------------------------------- */
 
 //Functions;
-void flyGirl(Vect vec) {
+void fly(Rocket a) {
+  Vect v = Vect();
+  float s = a.speedIncr;
+  float m = 0.0;
+  m += AltKey.isPressed() ? s : 0.0;
+  m -= CtrlKey.isPressed() ? s : 0.0;
+  m *= min(LaunchButton.getElapsed(), 50.0);
+  v.setHeading(YawDial.getAngle());
+  v.setMag(m);
+  a.acceleration.add(v);
+  return updateRocket(a);
+}
+
+void shiftParticles(Vect vec) {
   /* We want the cursor, not the planets, to move with the joystick. 
   Let's make the particles move in the opposite direction.
   The paralax creates the illusion of movement. */
@@ -38,6 +51,9 @@ void flyGirl(Vect vec) {
 
   for (int i = 0; i < Universe.particles.getSize(); i++) {
     Universe.particles[i].applyForce(vec);
+    if (Universe.particles[i].location.dist(Vect() > 50;) {
+      Universe.particles.remove(i);
+    }
   }
     for (int i = 0; i < Universe.moons.getSize(); i++) {
     Universe.moons[i].applyForce(vec);
@@ -63,6 +79,8 @@ void paintTheSky() {
   for (int i = 0; i < Universe.giants.getSize(); i++) {
     theDisplay.drawTo(Universe.giants[i].paint());
   }
+
+  //KILL PLANETS!!
 }
 
 bool evaluateArmed() {
@@ -74,19 +92,22 @@ bool evaluateLaunch() {
 }
 
 bool evaluateStall() {
-  return Apollo.fuel.getFuelGage() < 0.05 | Apollo.velocity.mag() > 15.0;
+  bool notArmed = !BallisticSwitch.isArmed();
+  bool lowFuel = Apollo.fuel.getFuelGage() < 0.05;
+  bool overHeated = Apollo.acceleration.mag() > Apollo.maxAccel;
+  return notArmed | lowFuel | overHeated;
 }
 
 /* -------------------------------- */
 
 void render() {
   // Handle all three states of LED
-  if (evaluateArmed() & !Apollo.inTheSky) {
+  if (evaluateArmed() & !Apollo.powered) {
     LaunchLed.blink();
   } else {
     LaunchLed.off();
   }
-  if (Apollo.inTheSky) {
+  if (Apollo.powered) {
     LaunchLed.on();
   }
 
@@ -111,13 +132,15 @@ void setup() {
 }
 
 void loop() {
-  Apollo.isArmed = evaluateArmed();
-  if (!Apollo.inTheSky) {
-    Apollo.inTheSky = evaluateLaunch();
+  if (!Apollo.powered) {
+    Apollo.powered = evaluateLaunch();
   } else {
-    Apollo.inTheSky = evaluateStall();
+    Apollo = fly(Apollo);
+    Apollo.powered = !evaluateStall();
   }
+
   // Draw to the display.
+  shiftParticles(Apollo.velocity);
   paintTheSky();
 }
 

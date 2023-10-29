@@ -37,6 +37,10 @@ const int LEDDISPLAY_SIZE = 256;
 const int LEDDISPLAY_XDIM = 16;
 const int LEDDISPLAY_YDIM = 16;
 
+const int MAP_SIZE = 4096;
+const int MAP_XDIM = 64;
+const int MAP_YDIM = 64;
+
 struct Led8 {
   CRGB matrix[8] = {};
 };
@@ -51,6 +55,10 @@ struct Led64 {
 
 struct Led256 {
   CRGB matrix[256] = {};
+};
+
+struct Led4096 {
+  CRGB matrix[4096] = {};
 };
 
 float fmap(float x, float a, float b, float c, float d)

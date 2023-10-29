@@ -61,12 +61,14 @@ class Fueltank {
 struct Rocket {
   CRGB pixels[256];
   Fueltank fuel;
-  bool isArmed;
-  bool inTheSky;
+  bool powered;
+  float maxSpeed;
+  float maxAccel;
+  float speedIncr;
   
   Vect location;
   Vect velocity;
-  Vect acceleraton;
+  Vect acceleration;
 
   Led256 getLed256() {
     Led256 leds;
@@ -90,24 +92,30 @@ Rocket initRocket(Rocket a) {
     }
   }
 
-  // New Rocket; Needs Fuel
   a.fuel = Fueltank(100.0);
-  // Not armed yet
-  a.isArmed = false;
-  // Nor flying
-  a.inTheSky = false;
+  a.powered = false;
   a.location = Vect();
   a.velocity = Vect();
-  a.acceleraton = Vect();
+  a.acceleration = Vect();
+  a.maxSpeed = 1;
+  a.maxAccel = 15.0;
+  a.speedIncr = 0.01;
 
   return a;
 }
 
-struct AstroWindow {
+Rocket updateRocket(Rocket a) {
+  a.velocity.add(a.acceleration);
+  a.velocity.limit(a.maxSpeed);
+  a.location.add(a.velocity);
+  return a;
+}
+
+struct HUD {
   CRGB pixels[64];
 };
 
-AstroWindow initAstroWindow(AstroWindow a) {
+HUD initHUD(HUD a) {
   // Set RBG Pixel Values
   for (int j = 0; j < 8; j++) {
     for (int i = 0; i < 8; i++) {
@@ -147,6 +155,10 @@ Space letThereBeLight(Space a) {
     GiantPlanet g = GiantPlanet();  
     a.giants.addLast(g);
   }
+}
+
+Space updateSpace(Space) {
+  
 }
 
 struct QuadMatrix {

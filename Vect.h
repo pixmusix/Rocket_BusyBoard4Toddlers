@@ -53,6 +53,14 @@ class Vect {
     return sqrt(x*x + y*y);
   }
 
+  /**
+   * Set the magnitude of this vector to the value used for the <b>len</b> parameter.
+   */
+  void setMag(float len) {
+    normalize();
+    mult(len);
+  }
+
 
   /**
    * Add a vector to this vector
@@ -177,9 +185,18 @@ class Vect {
   /**
    * Calculate the angle of rotation for this vector
    */
-  float heading2D() {
+  float getHeading() {
     float angle = (float) atan2(-y, x);
     return -1*angle;
+  }
+
+  /**
+   * Set the angle of rotation for this vector
+   */
+  void setHeading(float angle) { 
+    float m = mag();
+    x = m * cos(angle);
+    y = m * sin(angle);
   }
 
 
