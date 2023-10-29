@@ -199,6 +199,13 @@ class Vect {
     y = m * sin(angle);
   }
 
+  /**
+   * Set the angle of rotation for this vector
+   */
+  void shiftHeading(float angle) { 
+    float shiftedAngle = angle + getHeading();
+    setHeading(shiftedAngle);
+  }
 
   /**
    * Calculate the angle between two vectors, using the dot product

@@ -13,7 +13,6 @@
 /* -------------------------------- */
 //Objects
 Rocket Apollo;
-HUD HUDWindow;
 Space Universe;
 QuadMatrix theDisplay;
 
@@ -55,24 +54,28 @@ void shiftParticles(Vect vec) {
     if (Universe.particles[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.particles.remove(i);
     }
+    Universe.particles[i].location.shiftHeading(YawDial.getAngle());
   }
     for (int i = 0; i < Universe.moons.getSize(); i++) {
     Universe.moons[i].applyForce(vec);
     if (Universe.moons[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.moons.remove(i);
     }
+    Universe.moons[i].location.shiftHeading(YawDial.getAngle());
   }
   for (int i = 0; i < Universe.planets.getSize(); i++) {
     Universe.planets[i].applyForce(vec);
     if (Universe.planets[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.planets.remove(i);
     }
+    Universe.planets[i].location.shiftHeading(YawDial.getAngle());
   }
   for (int i = 0; i < Universe.giants.getSize(); i++) {
     Universe.giants[i].applyForce(vec);
     if (Universe.giants[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.giants.remove(i);
     }
+    Universe.giants[i].location.shiftHeading(YawDial.getAngle());
   }
 }
 
@@ -109,6 +112,7 @@ void paintTheSky() {
   for (int i = 0; i < Universe.giants.getSize(); i++) {
     theDisplay.drawTo(Universe.giants[i].paint());
   }
+  theDisplay.drawTo(Apollo.getLed256());
 }
 
 bool evaluateArmed() {
@@ -139,7 +143,10 @@ void render() {
     LaunchLed.on();
   }
 
-  // Draw to the rainbow.
+  // Handle to the rainbow.
+
+  // Draw
+  paintTheSky();
 
   // Tell the latch we have completed our render.
   digitalWrite(LATCH, HIGH);
@@ -155,15 +162,18 @@ void setup() {
   
   attachInterrupt(digitalPinToInterrupt(INTERRUPT), render, RISING);
 
+  Universe = letThereBeLight(Universe);
   Apollo = initRocket(Apollo);
-  theDisplay.drawTo(Apollo.getLed256());
+  
 }
 
 void loop() {
   if (!Apollo.powered) {
     Apollo.powered = evaluateLaunch();
+    Apollo.loadBitMap_Rocket();
   } else {
     Apollo = fly(Apollo);
+    Apollo.swapBitMapBySpeed();
     Apollo.powered = !evaluateStall();
   }
 

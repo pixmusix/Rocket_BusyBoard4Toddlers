@@ -60,6 +60,9 @@ class Fueltank {
 
 struct Rocket {
   CRGB pixels[256];
+  CRGB pixelsLowBurn[256];
+  CRGB pixelsHalfBurn[256];
+  CRGB pixelsFullBurn[256];
   Fueltank fuel;
   bool powered;
   float maxSpeed;
@@ -77,21 +80,81 @@ struct Rocket {
     }
     return leds;
   }
+
+  void swapBitMapBySpeed() {
+    // Draw Apollo
+    switch ((int)floor(velocity.mag())) {
+      case 0:
+        loadBitMap_Rocket();
+        break;
+      case 1:
+        loadBitMap_RocketLowBurn();
+        break;
+      case 2:
+        loadBitMap_RocketHalfBurn();
+        break;
+      default:
+        loadBitMap_RocketFullBurn();
+        break;
+    }
+  }
+
+  void loadBitMap_Rocket() {
+    // Set RBG Pixel Values
+    for (int j = 0; j < LEDDISPLAY_YDIM; j++) {
+      for (int i = 0; i < LEDDISPLAY_XDIM; i++) {
+        pixels[i+j*LEDDISPLAY_YDIM].setRGB(
+          Rocket64Data[i][j][0], 
+          Rocket64Data[i][j][1], 
+          Rocket64Data[i][j][2]
+        );
+      }
+    }
+  }
+
+  void loadBitMap_RocketFullBurn() {
+    // Set RBG Pixel Values
+    for (int j = 0; j < LEDDISPLAY_YDIM; j++) {
+      for (int i = 0; i < LEDDISPLAY_XDIM; i++) {
+        pixels[i+j*LEDDISPLAY_YDIM].setRGB(
+          Rocket64_FullBurnData[i][j][0], 
+          Rocket64_FullBurnData[i][j][1], 
+          Rocket64_FullBurnData[i][j][2]
+        );
+      }
+    }
+  }
+
+  void loadBitMap_RocketHalfBurn() {
+    // Set RBG Pixel Values
+    for (int j = 0; j < LEDDISPLAY_YDIM; j++) {
+      for (int i = 0; i < LEDDISPLAY_XDIM; i++) {
+        pixels[i+j*LEDDISPLAY_YDIM].setRGB(
+          Rocket64_HalfBurnData[i][j][0], 
+          Rocket64_HalfBurnData[i][j][1], 
+          Rocket64_HalfBurnData[i][j][2]
+        );
+      }
+    }
+  }
+
+  void loadBitMap_RocketLowBurn() {
+    // Set RBG Pixel Values
+    for (int j = 0; j < LEDDISPLAY_YDIM; j++) {
+      for (int i = 0; i < LEDDISPLAY_XDIM; i++) {
+        pixels[i+j*LEDDISPLAY_YDIM].setRGB(
+          Rocket64_LowBurnData[i][j][0], 
+          Rocket64_LowBurnData[i][j][1], 
+          Rocket64_LowBurnData[i][j][2]
+        );
+      }
+    }
+  }
 };
 
 /* Populate a Rocket with Default Values */
 Rocket initRocket(Rocket a) {
-  // Set RBG Pixel Values
-  for (int j = 0; j < LEDDISPLAY_YDIM; j++) {
-    for (int i = 0; i < LEDDISPLAY_XDIM; i++) {
-      a.pixels[i+j*LEDDISPLAY_YDIM].setRGB(
-        rocketRGBData[i][j][0], 
-        rocketRGBData[i][j][1], 
-        rocketRGBData[i][j][2]
-      );
-    }
-  }
-
+  a.loadBitMap_Rocket();
   a.fuel = Fueltank(100.0);
   a.powered = false;
   a.location = Vect();
@@ -120,9 +183,9 @@ HUD initHUD(HUD a) {
   for (int j = 0; j < 8; j++) {
     for (int i = 0; i < 8; i++) {
       a.pixels[i+j*8].setRGB(
-        crosshairRGBData[i][j][0], 
-        crosshairRGBData[i][j][1], 
-        crosshairRGBData[i][j][2]
+        CrosshairData[i][j][0], 
+        CrosshairData[i][j][1], 
+        CrosshairData[i][j][2]
       );
     }
   }
