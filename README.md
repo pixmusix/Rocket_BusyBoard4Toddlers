@@ -16,6 +16,9 @@ A digital busy-board for young children. Launch and control a rocketship with ze
 - Implement a render function that runs on pin interupt :heavy_check_mark:
 - Function to check for Rocket being armed :heavy_check_mark:
 - Expand the the properties of a rocket to include fuel and vectors :heavy_check_mark:
+- Animate Rocket Flying with flames :heavy_check_mark:
+- Allow the rocket to steer by rotating the planets around the centre of mass :heavy_check_mark:
+- Populate the universe with particles as time progresses :x:
 - Switching between "HUD" and "Space" previews :x:
 - ...
 

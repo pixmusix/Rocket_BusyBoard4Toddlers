@@ -54,28 +54,28 @@ void shiftParticles(Vect vec) {
     if (Universe.particles[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.particles.remove(i);
     }
-    Universe.particles[i].location.shiftHeading(YawDial.getAngle());
+    Universe.particles[i].location.setHeading(YawDial.getAngle());
   }
     for (int i = 0; i < Universe.moons.getSize(); i++) {
     Universe.moons[i].applyForce(vec);
     if (Universe.moons[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.moons.remove(i);
     }
-    Universe.moons[i].location.shiftHeading(YawDial.getAngle());
+    Universe.moons[i].location.setHeading(YawDial.getAngle());
   }
   for (int i = 0; i < Universe.planets.getSize(); i++) {
     Universe.planets[i].applyForce(vec);
     if (Universe.planets[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.planets.remove(i);
     }
-    Universe.planets[i].location.shiftHeading(YawDial.getAngle());
+    Universe.planets[i].location.setHeading(YawDial.getAngle());
   }
   for (int i = 0; i < Universe.giants.getSize(); i++) {
     Universe.giants[i].applyForce(vec);
     if (Universe.giants[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.giants.remove(i);
     }
-    Universe.giants[i].location.shiftHeading(YawDial.getAngle());
+    Universe.giants[i].location.setHeading(YawDial.getAngle());
   }
 }
 
