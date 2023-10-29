@@ -30,7 +30,7 @@ Joystick<JOYX_PIN, JOYY_PIN> JoyXY;
 /* -------------------------------- */
 
 //Functions;
-void fly(Rocket a) {
+Rocket fly(Rocket a) {
   Vect v = Vect();
   float s = a.speedIncr;
   float m = 0.0;
@@ -48,21 +48,51 @@ void shiftParticles(Vect vec) {
   Let's make the particles move in the opposite direction.
   The paralax creates the illusion of movement. */
   vec.mult(-1);
+  Vect centre = Vect(LEDDISPLAY_XDIM / 2.0, LEDDISPLAY_YDIM / 2.0);
 
   for (int i = 0; i < Universe.particles.getSize(); i++) {
     Universe.particles[i].applyForce(vec);
-    if (Universe.particles[i].location.dist(Vect() > 50;) {
+    if (Universe.particles[i].location.dist(centre) > sqrt(MAP_SIZE)) {
       Universe.particles.remove(i);
     }
   }
     for (int i = 0; i < Universe.moons.getSize(); i++) {
     Universe.moons[i].applyForce(vec);
+    if (Universe.moons[i].location.dist(centre) > sqrt(MAP_SIZE)) {
+      Universe.moons.remove(i);
+    }
   }
   for (int i = 0; i < Universe.planets.getSize(); i++) {
     Universe.planets[i].applyForce(vec);
+    if (Universe.planets[i].location.dist(centre) > sqrt(MAP_SIZE)) {
+      Universe.planets.remove(i);
+    }
   }
   for (int i = 0; i < Universe.giants.getSize(); i++) {
     Universe.giants[i].applyForce(vec);
+    if (Universe.giants[i].location.dist(centre) > sqrt(MAP_SIZE)) {
+      Universe.giants.remove(i);
+    }
+  }
+}
+
+void fillTheVoid() {
+  unsigned long e = (int)floor(millis() / 1000);
+  if (e % 120 == 0 & Universe.giants.getSize() < 5) {
+    GiantPlanet g = GiantPlanet();
+    Universe.giants.add(g);
+  }
+  if (e % 50 == 0 & Universe.giants.getSize() < 12) {
+    Planet p = Planet();
+    Universe.planets.add(p);
+  }
+  if (e % 10 == 0 & Universe.giants.getSize() < 20) {
+    Moon m = Moon();
+    Universe.moons.add(m);
+  }
+  if (e % 1 == 0 & Universe.giants.getSize() < 100) {
+    Particle p = Particle();
+    Universe.particles.add(p);
   }
 }
 
@@ -79,8 +109,6 @@ void paintTheSky() {
   for (int i = 0; i < Universe.giants.getSize(); i++) {
     theDisplay.drawTo(Universe.giants[i].paint());
   }
-
-  //KILL PLANETS!!
 }
 
 bool evaluateArmed() {
@@ -141,6 +169,7 @@ void loop() {
 
   // Draw to the display.
   shiftParticles(Apollo.velocity);
+  fillTheVoid();
   paintTheSky();
 }
 

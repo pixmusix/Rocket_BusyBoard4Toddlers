@@ -33,7 +33,7 @@ class Particle {
       // check if it's too close to the display
       if (location.dist(Vect(8.5,8.5)) < 16) {
         // lol...
-        return spawn()
+        return spawn();
       }
       return location;
     }
@@ -85,7 +85,7 @@ class Particle {
       int offsetX = (int)floor(LEDDISPLAY_XDIM / 2);
       for (int j = offsetY * -1; j < LEDDISPLAY_YDIM * MAP_YDIM - offsetY; j = j + MAP_YDIM) {
         for (int i = offsetX * -1; i < offsetX; i++) {
-          grid.matrix[i,j/MAP_YDIM] = canvas[i,j]
+          grid.matrix[i,j/MAP_YDIM] = canvas.matrix[i,j];
         }
       }
       return grid;
@@ -116,11 +116,11 @@ class Planet : public Particle {
         for (int i = 0; i < MAP_XDIM; i++) {
           Vect idx = Vect(i,j);
           float hypo = location.dist(idx);
-          if (h < size) {
+          if (hypo < size) {
             int r = red - ceil(hypo);
             int g = green - ceil(hypo);
             int b = blue - ceil(hypo);
-            grid.matrix[i + j * ledX].setRGB(r,g,b);
+            canvas.matrix[i + j * MAP_XDIM].setRGB(r,g,b);
           }
         }
       }
@@ -132,7 +132,7 @@ class Planet : public Particle {
       int offsetX = (int)floor(LEDDISPLAY_XDIM / 2);
       for (int j = offsetY * -1; j < LEDDISPLAY_YDIM * MAP_YDIM - offsetY; j = j + MAP_YDIM) {
         for (int i = offsetX * -1; i < offsetX; i++) {
-          grid.matrix[i,j/MAP_YDIM] = canvas[i,j]
+          grid.matrix[i,j/MAP_YDIM] = canvas.matrix[i,j];
         }
       }
       return grid;

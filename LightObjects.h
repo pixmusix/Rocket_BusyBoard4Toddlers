@@ -138,7 +138,6 @@ struct Space {
 };
 
 Space letThereBeLight(Space a) {
-  //Am I creating 5 different particles or 1 particle in 3 memory locations?
   for (int i = 0; i < 5; i++) {
     Particle p = Particle();  
     a.particles.addLast(p);
