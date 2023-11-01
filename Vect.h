@@ -1,5 +1,5 @@
 /*
-  Loosely based on the work of Dan Shiffman, Ben Fry, and Casey Reas
+  Based on the work of Ben Fry and Casey Reas
  */
 #pragma once
 #include <math.h> 

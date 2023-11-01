@@ -168,6 +168,13 @@ Rocket initRocket(Rocket a) {
 }
 
 Rocket updateRocket(Rocket a) {
+  //Drag
+  if (a.acceleration.mag() < (a.speedIncr / 2.0)) {
+    a.acceleration.mult(0.0);
+  } else {
+    a.acceleration.mult(0.9);
+  }
+  //Move
   a.velocity.add(a.acceleration);
   a.velocity.limit(a.maxSpeed);
   a.location.add(a.velocity);
@@ -229,7 +236,7 @@ struct QuadMatrix {
   LedStrip<DISPLAYPIN_SW, LEDMATRIX_COUNT> SW;
   LedStrip<DISPLAYPIN_SE, LEDMATRIX_COUNT> SE;
 
-  void drawTo(Led256 px) {
+  void drawTo (Led256 px) {
     /* This func splits the 256 element array into 4 64 element arrays.
     It devides the 16x16 square into 4 quadrents of 8x8: NW,NE,SW,SE Quadrants. 
     p and q allows us to clarify which array we need to push to.
@@ -255,5 +262,12 @@ struct QuadMatrix {
     NE.drawTo(subMatrix[1].matrix);
     SW.drawTo(subMatrix[2].matrix);
     SE.drawTo(subMatrix[3].matrix);
+  }
+
+  void pop() {
+    NW.ledPop();
+    NE.ledPop();
+    SW.ledPop();
+    SE.ledPop();
   }
 }; 

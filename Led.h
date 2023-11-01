@@ -42,6 +42,19 @@ template<byte pin, int sz> class LedStrip {
       FastLED.addLeds<WS2812B, pin, GRB>(matrix, sz); 
     }
 
+  public:
+
+    LedStrip() {     
+      pinMode(pin, OUTPUT);
+      cache = 0;
+      ledConfig();
+    }
+
+    void ledPop() {
+      cache += 1;
+      FastLED.show();
+    }
+
     CRGB getPix(int i) {
       if (i < sz) {
         return matrix[i];
@@ -66,22 +79,15 @@ template<byte pin, int sz> class LedStrip {
       }
     }
 
-  public:
-
-    LedStrip() {     
-      pinMode(pin, OUTPUT);
-      cache = 0;
-      ledConfig();
-    }
-
-    void ledPop() {
-      cache += 1;
-      FastLED.show();
-    }
-
     void drawTo(CRGB externalMatrix[]) { 
       for (int i = 0; i < sz; i++) {
         matrix[i] += externalMatrix[i];
+      }
+    }
+
+    void setAll(byte r, byte g, byte b) {
+      for (int i = 0; i < sz; i++) {
+        setPix(i, r, g, b);
       }
     }
 

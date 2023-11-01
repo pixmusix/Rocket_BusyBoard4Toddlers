@@ -20,6 +20,9 @@ A digital busy-board for young children. Launch and control a rocketship with ze
 - Allow the rocket to steer by rotating the planets around the centre of mass :heavy_check_mark:
 - Populate the universe with particles as time progresses :x:
 - Switching between "HUD" and "Space" previews :x:
+- Make the Vect class return itself when performing basic operations like multiply :x:
+- Write Handlers for diplaying data on the rainbow and strip :heavy_check_mark:
+- Write Handlers for the SevenSegment to display the Joystick Vector :heavy_check_mark:
 - ...
 
 ### Component Tests

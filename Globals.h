@@ -15,11 +15,13 @@ const byte YAWDIAL_PIN = 23;
 const byte LAUNCHBUTTON_PIN = 24;
 const byte RAINBOW_PIN = 25;
 const byte LAUNCHLED_PIN = 26;
-const byte MONITORSWITCH_PIN = 27;
+const byte STRIPLED_PIN = 27;
 const byte CTRLBUTTON_PIN = 28;
 const byte ALTBUTTON_PIN = 29;
 const byte JOYX_PIN = 30;
 const byte JOYY_PIN = 31;
+const byte SEVSEG_PIN = 32;
+const byte SEVSEG_CLK = 33;
 
 //vars for an LED STRIP;
 const int LEDSTRIP_COUNT = 8;

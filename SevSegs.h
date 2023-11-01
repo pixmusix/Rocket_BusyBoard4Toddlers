@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include <TM1637Display.h>
 #include <Keypad.h>
+#include "Vect.h"
 
 /* This wrapper for TM1637 chipset abstracts the set-up for us. */
 template<byte pin, byte clk> class SevenSegment {
@@ -26,6 +27,14 @@ template<byte pin, byte clk> class SevenSegment {
 
     void displayInt(int i) {
       display.showNumberDec(i, true);
+    }
+
+    void displayVect(Vect v) {
+      v.wrap(255.0);
+      byte i = (int)v.x;
+      byte j = (int)v.y;
+      int k = i << 8 | j;
+      display.showNumberHexEx(k, 0b01000000, true, 4);
     }
 
     void on() {

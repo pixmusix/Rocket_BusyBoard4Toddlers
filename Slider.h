@@ -7,6 +7,7 @@ class Slider {
   protected:
     byte pin;
     int val;
+    int cache;
 
     void update() {
       val = analogRead(pin);
@@ -18,6 +19,7 @@ class Slider {
 
     Slider(byte pin) {
       this->pin = pin;
+      cache = 0;
     }
 
     int getValue() {
@@ -25,10 +27,23 @@ class Slider {
       return val;
     }
 
+    int getChange() {
+      int k = cache - getValue();
+      if (k != 0) {
+        cache = getValue();
+        return k;
+      }
+    }
+
 };
 
 /* A dial is just a slider where angle matters. */
 class Dial : public Slider {
+
+  private:
+    float toRadians(int i) {
+      return (i / 1023.0) * TWO_PI;
+    }
   
   public:
 
@@ -38,8 +53,15 @@ class Dial : public Slider {
 
     float getAngle() {
       update();
-      float rad = (val / 1023.0) * TWO_PI;
-      return rad;
+      return toRadians(val);
+    }
+
+    float getAngleChange() {
+      int k = cache - getValue();
+      if (k != 0) {
+        cache = getValue();
+        return toRadians(k);
+      }
     }
 
 };
@@ -60,9 +82,6 @@ template<byte pinX, byte pinY> class Joystick {
     Vect getVector() {
       float x = fmap(axisX.getValue(), 0, 1023, -1., 1.);
       float y = fmap(axisY.getValue(), 0, 1023, -1., 1.);
-      Serial.print(x);
-      Serial.print("  ");
-      Serial.println(y);
       Vect vec = Vect(x,y);
       return vec;
     }
